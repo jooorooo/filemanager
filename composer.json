@@ -1,0 +1,22 @@
+{
+  "name": "simexis/filemanager",
+  "description": "A file upload/editor intended for use with Laravel 5 and CKEditor",
+  "license": "MIT",
+  "authors": [
+        {
+            "name": "Georgi Nachev",
+            "email": "jooorooo@gmail.com"
+        }
+  ],
+  "require": {
+    "php": ">=5.5.9",
+    "illuminate/support": ">=5.0.0",
+    "intervention/image": "2.*",
+	"simexis/ckeditor": ">=1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Simexis\\Filemanager\\": "src/"
+    }
+  }
+}

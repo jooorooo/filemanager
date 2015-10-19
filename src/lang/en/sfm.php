@@ -1,0 +1,31 @@
+<?php
+
+return [
+    'title'        => 'FileManager',
+    'upload'       => 'Upload',
+    'upload_file'  => 'Upload File',
+    'thumbnails'   => 'Thumbnails',
+    'list'         => 'List',
+    'new_folder'   => 'New Folder',
+    'rename'       => 'Rename',
+	'rename_to'	   => 'Rename to',
+    'delete'       => 'Delete',
+    'view'         => 'View',
+    'download'     => 'Download',
+    'resize'       => 'Resize',
+    'crop'         => 'Crop',
+    'item'         => 'Item',
+    'size'         => 'Size',
+    'type'         => 'Type',
+    'modified'     => 'Modified',
+    'action'       => 'Action',
+    'folder'       => 'Folder',
+    'empty_folder' => 'Folder is empty',
+	'folder_name'  => 'Folder name:',
+	'choose_file'  => 'Choose File',
+	'close' 	   => 'Close',
+	'view_file'    => 'View File',
+	'uploading'	   => 'Uploading...',
+	'upload_file'  => 'Upload File...',
+	'confirm_delete' => 'Are you sure you want to delete this item?'
+];

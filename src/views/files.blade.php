@@ -9,7 +9,7 @@
                         <a id="large_folder_{{ $key }}" data-id="{{ $dir }}"
                            onclick="clickFolder('large_folder_{{ $key }}',1)"
                            class="folder-icon pointer">
-                            <img src="{{ assets('vendor/filemanager/img/folder.jpg') }}">
+                            <img src="{{ url('vendor/filemanager/img/folder.jpg') }}">
                         </a>
                     </div>
                     <div class="caption text-center">

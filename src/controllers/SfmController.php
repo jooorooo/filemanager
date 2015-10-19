@@ -12,7 +12,7 @@ use Intervention\Image\Facades\Image;
  * Class LfmController
  * @package Simexis\Filemanager\controllers
  */
-class LfmController extends Controller {
+class SfmController extends Controller {
 
     /**
      * @var

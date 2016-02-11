@@ -1,5 +1,5 @@
 <?php
-Route::group(array('middleware' => 'auth', 'namespace' => 'Simexis\Filemanager\controllers'), function () // make sure authenticated
+Route::group(array('middleware' => config('sfm.middleware'), 'namespace' => 'Simexis\Filemanager\controllers'), function () // make sure authenticated
 {
 
     // Show SFM

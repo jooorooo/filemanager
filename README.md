@@ -28,7 +28,11 @@ following command:
 
 1. Add the ServiceProvider to the providers array in config/app.php:
 
-    `'Simexis\Filemanager\FilemanagerServiceProvider',`
+    `Simexis\Filemanager\FilemanagerServiceProvider::class,`
+
+1. Add the Facade to the Facades array in config/app.php:
+
+    `'Filemanager' => Simexis\Filemanager\Facades\Filemanager::class,`
 
 1. Publish the package's config file:
 
@@ -76,7 +80,16 @@ CKEditor instance as follows:
     Here, "editor" is the id of the textarea you are transforming to a CKEditor instance. Note that if
     you are using a custom route you will have to change `/filemanager?type=Images` to correspond
     to whatever route you have chosen. Be sure to include the `?type=Images` parameter.
-    
+
+1. Before
+```html
+</body>
+```
+tag add
+
+```php
+<?php echo Filemanager::scripts(); ?>
+```
     
 ## Security
 
@@ -86,7 +99,7 @@ unauthorized uploads to your server__. Fortunately, Laravel makes this very easy
 If, for example, you want to ensure that only logged in users have the ability to access the Laravel-Filemanager, 
 simply wrap the routes in a group, perhaps like this:
 
-    Route::group(array('middleware' => 'auth', 'namespace' => 'Simexis\Filemanager\controllers'), function () // make sure authenticated
+    Route::group(array('middleware' => ['auth', 'web'], 'namespace' => 'Simexis\Filemanager\controllers'), function () // make sure authenticated
 	{
 
 		// Show SFM

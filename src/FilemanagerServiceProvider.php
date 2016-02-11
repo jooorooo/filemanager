@@ -45,40 +45,23 @@ class FilemanagerServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-        $this->app['filemanager'] = $this->app->share(function ()
-        {
-            return true;
-        });
+		$this->app->singleton('filemanager', function ($app) {
+			return new Filemanager($app);
+		});
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return array('filemanager');
     }
 	
 	public function getFilebrowser($key) {
-		if(in_array($key, ['BrowseUrl', 'ImageBrowseUrl', 'FlashBrowseUrl', 'UploadUrl', 'ImageUploadUrl', 'FlashUploadUrl']) && is_callable([$this, '_' . $key]))
-			return call_user_func([$this, '_' . $key]);
-		return null;
-	}
-	
-	private function _BrowseUrl() {
-		return route('filemanager.show');
-	}
-	
-	private function _ImageBrowseUrl() {
-		return route('filemanager.show', ['type' => 'Images']);
-	}
-	
-	private function _FlashBrowseUrl() {
-		return route('filemanager.show', ['type' => 'Flash']);
-	}
-	
-	private function _UploadUrl() {
-		return route('filemanager.upload');
-	}
-	
-	private function _ImageUploadUrl() {
-		return route('filemanager.upload', ['type' => 'Images']);
-	}
-	
-	private function _FlashUploadUrl() {
-		return route('filemanager.upload', ['type' => 'Flash']);
+        return with(new Filemanager($this->app))->getFilebrowser($key);
 	}
 
 }

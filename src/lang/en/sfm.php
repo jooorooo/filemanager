@@ -24,6 +24,8 @@ return [
 	'folder_name'  => 'Folder name:',
 	'choose_file'  => 'Choose File',
 	'close' 	   => 'Close',
+	'cancel' 	   => 'Cancel',
+	'clear' 	   => 'Clear',
 	'view_file'    => 'View File',
 	'uploading'	   => 'Uploading...',
 	'upload_file'  => 'Upload File...',

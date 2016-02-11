@@ -93,7 +93,7 @@
                 {!! Form::open(array('route' => 'filemanager.upload', 'role' => 'form', 'name' => 'uploadForm',
                 'id' => 'uploadForm', 'method' => 'post', 'enctype' => 'multipart/form-data')) !!}
                 <div class="form-group" id="attachment">
-                    {!! Form::label('file_to_upload', Lang::get('filemanager::sfm.choose_file'), array('class' => 'control-label')); !!}
+                    {!! Form::label('file_to_upload', Lang::get('filemanager::sfm.choose_file'), array('class' => 'control-label')) !!}
                     <div class="controls">
                         <div class="input-group" style="width: 100%">
                             <input type="file" id="file_to_upload" name="file_to_upload">

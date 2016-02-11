@@ -3,6 +3,8 @@
 return [
     'use_package_routes' => true,
 
+    'middleware' => ['auth', 'web'],
+
     'images_dir'         => 'public/vendor/filemanager/images/',
     'images_url'         => '/vendor/filemanager/images/',
 

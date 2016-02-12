@@ -28,6 +28,8 @@ class ItemsController extends Controller {
             $all_directories = File::directories(base_path(Config::get('sfm.dir')));
         }
 
+        $filter_images = Input::get('filter') == 'images';
+
         $directories = [];
 
         foreach ($all_directories as $directory)
@@ -45,8 +47,13 @@ class ItemsController extends Controller {
         {
             $file_name = $file;
 
-            $file_created = filemtime($file);
             $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+            $is_image = in_array($ext, ['jpeg','jpg','png','gif']);
+
+            if($filter_images && !$is_image)
+                continue;
+
+            $file_created = filemtime($file);
 
             $file_type = explode(';', $finfo->file($file))[0];
             $file_info[] = [
@@ -57,7 +64,7 @@ class ItemsController extends Controller {
                 'type'    => $file_type,
                 'ext'     => $ext,
                 'icon'    => Icons::getIcon($ext),
-                'image' => (bool)preg_match('~^image/(jpeg|jpg|png|gif)~', $file_type)
+                'image'   => $is_image
             ];
         }
 

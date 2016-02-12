@@ -33,8 +33,7 @@ window.useFile = function(num, file) {
     $('#modal-open-filemanager').modal('hide');
 }
 if(jQuery) {
-    var image_browse = '{{ route('filemanager.show') }}';
-    var file_browse = '{{ route('filemanager.show') }}';
+    var last_opened = null;
     $('.event-image-input, .event-file-input').each(function(num) {
         var input = $(this),
             is_image = input.hasClass('event-image-input'),
@@ -53,9 +52,12 @@ if(jQuery) {
                 modal.find('.modal-dialog, .modal-content').css({
                             width: window.innerWidth- parseInt(window.innerWidth/10),
                             height: window.innerHeight - parseInt(window.innerHeight/10)
-                        }).end(true).find('iframe')
-                        .attr('src', (is_image ? '{!! route('filemanager.show', ['filter' => 'images','num' => 'NUMBER', 'inline' => 1]) !!}' : '{!! route('filemanager.show', ['num' => 'NUMBER', 'inline' => 1]) !!}').replace('NUMBER',num) )
-                        .end(true).modal('show');
+                        });
+            if(last_opened !== is_image) {
+                modal.find('iframe').attr('src', (is_image ? '{!! route('filemanager.show', ['filter' => 'images','num' => 'NUMBER', 'inline' => 1]) !!}' : '{!! route('filemanager.show', ['num' => 'NUMBER', 'inline' => 1]) !!}').replace('NUMBER', num));
+                last_opened = is_image;
+            }
+            modal.modal('show');
         });
         wrap.find('.button-clear').off('.file-clear').on('click.file-clear', function() {
             input.val('');

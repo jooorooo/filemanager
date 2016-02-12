@@ -33,18 +33,24 @@
 
             @foreach($files as $key => $file)
 
-                <div class="col-sm-6 col-md-2 img-row">
+                <div class="col-sm-6 col-md-3 img-row">
 
-                    <div class="thumbnail thumbnail-img" data-id="{{ basename($file) }}" id="img_thumbnail_{{ $key }}">
-                        <img id="{!! $file !!}"
-                             src="{{ $dir_location }}{{ $base }}/thumbs/{{ basename($file) }}?r={{ str_random(40) }}"
+                    <div class="thumbnail thumbnail-img" data-id="{{ $file['basename'] }}" id="img_thumbnail_{{ $key }}">
+                        @if($file['image'])
+                        <img id="{!! $file['name'] !!}"
+                             src="{{ asset($dir_location . $base . '/.thumbs/' . $file['basename']) }}?r={{ str_random(40) }}"
                              alt="">
+                        @else
+                            <img id="{!! $file['name'] !!}"
+                                 src="{{ asset('vendor/filemanager/img/ext/256/' . $file['icon']) }}?r={{ str_random(40) }}"
+                                 alt="">
+                        @endif
                     </div>
 
                     <div class="caption text-center">
                         <div class="btn-group ">
-                            <button type="button" onclick="useFile('{!! basename($file) !!}')" class="btn btn-default btn-xs">
-                                {!! str_limit(basename($file), $limit = 10, $end = '...') !!}
+                            <button type="button" onclick="useFile('{!! $file['basename'] !!}')" class="btn btn-default btn-xs">
+                                {!! str_limit($file['basename'], $limit = 10, $end = '...') !!}
                             </button>
                             <button type="button" class="btn btn-default dropdown-toggle btn-xs" data-toggle="dropdown"
                                     aria-expanded="false">
@@ -52,15 +58,19 @@
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="javascript:rename('{!! basename($file) !!}')">{!! Lang::get('filemanager::sfm.rename') !!}</a></li>
-                                <li><a href="javascript:fileView('{!! basename($file) !!}')">{!! Lang::get('filemanager::sfm.view') !!}</a></li>
-                                <li><a href="javascript:download('{!! basename($file) !!}')">{!! Lang::get('filemanager::sfm.download') !!}</a></li>
+                                <li><a href="javascript:rename('{!! $file['basename'] !!}')">{!! Lang::get('filemanager::sfm.rename') !!}</a></li>
+                                @if($file['image'])
+                                <li><a href="javascript:fileView('{!! $file['basename'] !!}')">{!! Lang::get('filemanager::sfm.view') !!}</a></li>
+                                @endif
+                                <li><a href="javascript:download('{!! $file['basename'] !!}')">{!! Lang::get('filemanager::sfm.download') !!}</a></li>
+                                @if($file['image'])
                                 <li class="divider"></li>
                                 {{--<li><a href="javascript:notImp()">Rotate</a></li>--}}
-                                <li><a href="javascript:resizeImage('{!! basename($file) !!}')">{!! Lang::get('filemanager::sfm.resize') !!}</a></li>
-                                <li><a href="javascript:cropImage('{!! basename($file) !!}')">{!! Lang::get('filemanager::sfm.crop') !!}</a></li>
+                                <li><a href="javascript:resizeImage('{!! $file['basename'] !!}')">{!! Lang::get('filemanager::sfm.resize') !!}</a></li>
+                                <li><a href="javascript:cropImage('{!! $file['basename'] !!}')">{!! Lang::get('filemanager::sfm.crop') !!}</a></li>
+                                @endif
                                 <li class="divider"></li>
-                                <li><a href="javascript:trash('{!! basename($file) !!}')">{!! Lang::get('filemanager::sfm.delete') !!}</a></li>
+                                <li><a href="javascript:trash('{!! $file['basename'] !!}')">{!! Lang::get('filemanager::sfm.delete') !!}</a></li>
                             </ul>
                         </div>
                     </div>

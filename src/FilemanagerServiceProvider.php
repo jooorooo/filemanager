@@ -59,9 +59,5 @@ class FilemanagerServiceProvider extends ServiceProvider {
     {
         return array('filemanager');
     }
-	
-	public function getFilebrowser($key) {
-        return with(new Filemanager($this->app))->getFilebrowser($key);
-	}
 
 }

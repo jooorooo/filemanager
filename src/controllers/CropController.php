@@ -23,7 +23,7 @@ class CropController extends Controller {
         $image = Input::get('img');
 
         return View::make('filemanager::crop')
-            ->with('img', Config::get('sfm.images_url') . $dir . "/" . $image)
+            ->with('img', Config::get('sfm.url') . $dir . "/" . $image)
             ->with('dir', $dir)
             ->with('image', $image);
     }
@@ -49,7 +49,7 @@ class CropController extends Controller {
         // make new thumbnail
         $thumb_img = Image::make(public_path() . $img);
         $thumb_img->fit(200, 200)
-            ->save(base_path() . "/" . Config::get('sfm.images_dir') . $dir . "/thumbs/" . basename($img));
+            ->save(base_path() . "/" . Config::get('sfm.dir') . $dir . "/.thumbs/" . basename($img));
     }
 
 }

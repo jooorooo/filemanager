@@ -15,50 +15,20 @@ use Intervention\Image\Facades\Image;
 class SfmController extends Controller {
 
     /**
-     * @var
-     */
-    protected $file_location;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        if ((Session::has('sfm_type')) && (Session::get('sfm_type') == 'Files'))
-        {
-            $this->file_location = Config::get('sfm.files_dir');
-        } else
-        {
-            $this->file_location = Config::get('sfm.images_dir');
-        }
-    }
-
-
-    /**
      * Show the filemanager
      *
      * @return mixed
      */
     public function show()
     {
-        if ((Input::has('type')) && (Input::get('type') == "Files"))
-        {
-            Session::put('sfm_type', 'Files');
-            $this->file_location = Config::get('sfm.files_dir');
-        } else
-        {
-            Session::put('sfm_type', 'Images');
-            $this->file_location = Config::get('sfm.images_dir');
-        }
-
-        if (Input::has('base'))
+        if (Input::has('base') && strpos(Input::has('base'), '..') === false)
         {
             $working_dir = Input::get('base');
-            $base = $this->file_location . Input::get('base') . "/";
+            $base = Config::get('sfm.dir') . Input::get('base') . "/";
         } else
         {
             $working_dir = "/";
-            $base = $this->file_location;
+            $base = Config::get('sfm.dir');
         }
 
         return View::make('filemanager::index')

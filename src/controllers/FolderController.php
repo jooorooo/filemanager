@@ -1,5 +1,6 @@
 <?php namespace Simexis\Filemanager\controllers;
 
+use Lang;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
@@ -14,17 +15,6 @@ use Illuminate\Support\Str;
  */
 class FolderController extends Controller {
 
-    protected $file_location;
-
-    function __construct()
-    {
-        if (Session::get('sfm_type') == "Images")
-            $this->file_location = Config::get('sfm.images_dir');
-        else
-            $this->file_location = Config::get('sfm.files_dir');
-    }
-
-
     /**
      * Get list of folders as json to populate treeview
      *
@@ -32,7 +22,7 @@ class FolderController extends Controller {
      */
     public function getFolders()
     {
-        $directories = File::directories(base_path($this->file_location));
+        $directories = File::directories(base_path(Config::get('sfm.dir')));
         $final_array = [];
 
         foreach ($directories as $directory)
@@ -57,7 +47,7 @@ class FolderController extends Controller {
     {
         $folder_name = Str::slug(Input::get('name'));
 
-        $path = base_path($this->file_location);
+        $path = base_path(Config::get('sfm.dir'));
 
         if (!File::exists($path . "/" . $folder_name))
         {
@@ -65,7 +55,7 @@ class FolderController extends Controller {
             return "OK";
         } else
         {
-            return "A folder with this name already exists!";
+            return Lang::get('filemanager::sfm.folder_exists');
         }
 
     }

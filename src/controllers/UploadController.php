@@ -1,5 +1,6 @@
 <?php namespace Simexis\Filemanager\controllers;
 
+use Lang;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
@@ -14,23 +15,6 @@ use Intervention\Image\Facades\Image;
  */
 class UploadController extends Controller {
 
-    /**
-     * @var
-     */
-    protected $file_location;
-
-
-    /**
-     * constructor
-     */
-    function __construct()
-    {
-        if (Session::get('sfm_type') == "Images")
-            $this->file_location = Config::get('sfm.images_dir');
-        else
-            $this->file_location = Config::get('sfm.files_dir');
-    }
-
 
     /**
      * Upload an image/file and (for images) create thumbnail
@@ -41,69 +25,52 @@ class UploadController extends Controller {
     public function upload()
     {
         // sanity check
-        if ( ! Input::hasFile('file_to_upload'))
+        if ( ! Input::hasFile('file_to_upload') && ! Input::hasFile('upload'))
         {
             // there ws no uploded file
-            return "You must choose a file!";
+            return Lang::get('filemanager::sfm.select_file');
             exit;
         }
 
+        $file = Input::hasFile('file_to_upload') ? Input::file('file_to_upload') : Input::file('upload');
+        $working_dir = Input::get('working_dir');
+        $destinationPath = base_path() . "/" . Config::get('sfm.dir');
 
-        if (Session::get('sfm_type') == "Images")
+        if (strlen($working_dir) > 1)
         {
-            $file = Input::file('file_to_upload');
-            $working_dir = Input::get('working_dir');
-            $destinationPath = base_path() . "/" . $this->file_location;
+            $destinationPath .= $working_dir . "/";
+        }
 
-            if (strlen($working_dir) > 1)
-            {
-                $destinationPath .= $working_dir . "/";
-            }
+        $filename = $file->getClientOriginalName();
+        $extension = strtolower($file->getClientOriginalExtension());
 
-            $filename = $file->getClientOriginalName();
-            $extension = $file->getClientOriginalExtension();
+        if(is_array(Config::get('sfm.allow')) && count($allow = Config::get('sfm.allow'))) {
+            if(!in_array($extension, $allow))
+                return Lang::get('filemanager::sfm.file_not_allowed');
+        }
 
-            $new_filename = Str::slug(str_replace($extension, '', $filename)) . "." . $extension;
+        $new_filename = Str::slug(str_replace($extension, '', $filename)) . "." . $extension;
 
-            Input::file('file_to_upload')->move($destinationPath, $new_filename);
+        if (!File::exists($destinationPath . "/.thumbs"))
+        {
+            File::makeDirectory($destinationPath . "/.thumbs");
+        }
 
-            if (!File::exists($destinationPath . "thumbs"))
-            {
-                File::makeDirectory($destinationPath . "thumbs");
-            }
+        $file->move($destinationPath, $new_filename);
 
+        if(@getimagesize($destinationPath . $new_filename)) {
             $thumb_img = Image::make($destinationPath . $new_filename);
             $thumb_img->fit(200, 200)
-                ->save($destinationPath . "thumbs/" . $new_filename);
+                ->save($destinationPath . "/.thumbs/" . $new_filename);
             unset($thumb_img);
-
-            return "OK";
-        } else
-        {
-            $file = Input::file('file_to_upload');
-            $working_dir = Input::get('working_dir');
-            $destinationPath = base_path() . "/" . $this->file_location;
-
-            if (strlen($working_dir) > 1)
-            {
-                $destinationPath .= $working_dir . "/";
-            }
-
-            $filename = $file->getClientOriginalName();
-            $extension = $file->getClientOriginalExtension();
-
-            $new_filename = Str::slug(str_replace($extension, '', $filename)) . "." . $extension;
-
-            if (File::exists($destinationPath . $new_filename))
-            {
-                return "A file with this name already exists!";
-                exit;
-            }
-
-            Input::file('file_to_upload')->move($destinationPath, $new_filename);
-
-            return "OK";
         }
+
+        if(Input::hasFile('upload')) {
+            $html = '<a href="javascript:void(0)" onclick="parent.CKEDITOR.tools.callFunction(0, \''.$working_dir.'/'.$new_filename.'\')">' . $filename . '</a>';
+            exit($html);
+        }
+
+        return "OK";
 
     }
 

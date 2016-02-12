@@ -208,43 +208,23 @@
             + x;
     }
 
-    @if ((Session::has('sfm_type')) && (Session::get('sfm_type') == "Images"))
-        function loadImages() {
-            $.ajax({
-                type: "GET",
-                dataType: "html",
-                url: "{{ route('filemanager.images') }}",
-                data: {
-                    base: $("#working_dir").val(),
-                    show_list: $("#show_list").val()
-                },
-                cache: false
-            }).done(function (data) {
-                $("#content").html(data);
-                $("#nav-buttons").removeClass("hidden");
-                $(".dropdown-toggle").dropdown();
-                refreshFolders();
-            });
-        }
-    @else
-        function loadImages() {
-            $.ajax({
-                type: "GET",
-                dataType: "html",
-                url: "{{ route('filemanager.files') }}",
-                data: {
-                    base: $("#working_dir").val(),
-                    show_list: $("#show_list").val()
-                },
-                cache: false
-            }).done(function (data) {
-                $("#content").html(data);
-                $("#nav-buttons").removeClass("hidden");
-                $(".dropdown-toggle").dropdown();
-                refreshFolders();
-            });
-        }
-    @endif
+    function loadImages() {
+        $.ajax({
+            type: "GET",
+            dataType: "html",
+            url: "@if(request('filter')){{ route('filemanager.files', ['filter' => request('filter')]) }}@else{{ route('filemanager.files') }}@endif",
+            data: {
+                base: $("#working_dir").val(),
+                show_list: $("#show_list").val()
+            },
+            cache: false
+        }).done(function (data) {
+            $("#content").html(data);
+            $("#nav-buttons").removeClass("hidden");
+            $(".dropdown-toggle").dropdown();
+            refreshFolders();
+        });
+    }
 
     function trash(x) {
         bootbox.confirm("{{ Lang::get('filemanager::sfm.confirm_delete') }}", function (result) {
@@ -348,22 +328,20 @@
         }
 
         var funcNum = getUrlParam('CKEditorFuncNum');
-        window.opener.CKEDITOR.tools.callFunction(funcNum, path + "/" + file);
-
-        @if ((Session::has('sfm_type')) && (Session::get('sfm_type') == "Images"))
+        if(funcNum) {
             if (path != '/') {
-                window.opener.CKEDITOR.tools.callFunction(funcNum, '{{ \Config::get('sfm.images_url') }}' + path + "/" + file);
+                window.opener.CKEDITOR.tools.callFunction(funcNum, '{{ \Config::get('sfm.url') }}' + path + "/" + file);
             } else {
-                window.opener.CKEDITOR.tools.callFunction(funcNum, '{{ \Config::get('sfm.images_url') }}' + file);
+                window.opener.CKEDITOR.tools.callFunction(funcNum, '{{ \Config::get('sfm.url') }}' + file);
             }
-        @else
+            window.close();
+        } else if({{ (int)request('inline', 0) }}) {
             if (path != '/') {
-            window.opener.CKEDITOR.tools.callFunction(funcNum, '{{ \Config::get('sfm.files_url') }}' + path + "/" + file);
-        } else {
-            window.opener.CKEDITOR.tools.callFunction(funcNum, '{{ \Config::get('sfm.files_url') }}' + file);
+                window.parent.useFile({{ (int)request('num', -1) }}, '{{ \Config::get('sfm.url') }}' + path + "/" + file);
+            } else {
+                window.parent.useFile({{ (int)request('num', -1) }}, '{{ \Config::get('sfm.url') }}' + file);
+            }
         }
-        @endif
-        window.close();
     }
 
     function rename(x) {
@@ -428,7 +406,7 @@
     function fileView(x){
         var rnd = makeRandom();
         $('#fileview_body').html(
-                "<img class='img img-responsive center-block' src='{!! Config::get('sfm.images_url') !!}" + $("#working_dir").val() + "/" + x + "?id=" + rnd + "'>"
+                "<img class='img img-responsive center-block' src='{!! Config::get('sfm.url') !!}" + $("#working_dir").val() + "/" + x + "?id=" + rnd + "'>"
         );
         $('#fileViewModal').modal();
     }

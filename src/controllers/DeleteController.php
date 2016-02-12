@@ -1,5 +1,6 @@
 <?php namespace Simexis\Filemanager\controllers;
 
+use Lang;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
@@ -11,23 +12,6 @@ use Illuminate\Support\Facades\Session;
  * @package Simexis\Filemanager\controllers
  */
 class DeleteController extends Controller {
-
-    /**
-     * @var
-     */
-    protected $file_location;
-
-
-    /**
-     * constructor
-     */
-    function __construct()
-    {
-        if (Session::get('sfm_type') == "Images")
-            $this->file_location = Config::get('sfm.images_dir');
-        else
-            $this->file_location = Config::get('sfm.files_dir');
-    }
 
 
     /**
@@ -42,29 +26,27 @@ class DeleteController extends Controller {
 
         if ($base != "/")
         {
-            if (File::isDirectory(base_path() . "/" . $this->file_location . $to_delete))
+            if (File::isDirectory(base_path() . "/" . Config::get('sfm.dir') . $to_delete))
             {
-                File::delete(base_path() . "/" . $this->file_location . $base . "/" . $to_delete);
+                File::delete(base_path() . "/" . Config::get('sfm.dir') . $base . "/" . $to_delete);
 
                 return "OK";
             } else
             {
-                if (File::exists(base_path() . "/" . $this->file_location . $base . "/" . $to_delete))
+                if (File::exists(base_path() . "/" . Config::get('sfm.dir') . $base . "/" . $to_delete))
                 {
-                    File::delete(base_path() . "/" . $this->file_location . $base . "/" . $to_delete);
-
-                    if (Session::get('sfm_type') == "Images'")
-                        File::delete(base_path() . "/" . $this->file_location . $base . "/" . "thumbs/" . $to_delete);
+                    if (@getimagesize(base_path() . "/" . Config::get('sfm.dir') . $base . "/" . $to_delete))
+                        File::delete(base_path() . "/" . Config::get('sfm.dir') . $base . "/.thumbs/" . $to_delete);
+                    File::delete(base_path() . "/" . Config::get('sfm.dir') . $base . "/" . $to_delete);
 
                     return "OK";
                 } else {
-                    return base_path() . "/" . $this->file_location . $base . "/" . $to_delete
-                        . " not found!";
+                    return Lang::get('filemanager::sfm.not_found', ['file' => Config::get('sfm.dir') . $base . "/" . $to_delete]);
                 }
             }
         } else
         {
-            $file_name = base_path() . "/" . $this->file_location . $to_delete;
+            $file_name = base_path() . "/" . Config::get('sfm.dir') . $to_delete;
             if (File::isDirectory($file_name))
             {
                 // make sure the directory is empty
@@ -75,15 +57,15 @@ class DeleteController extends Controller {
                     return "OK";
                 } else
                 {
-                    return "You cannot delete this folder because it is not empty!";
+                    return Lang::get('filemanager::sfm.not_empty');
                 }
             } else
             {
                 if (File::exists($file_name))
                 {
+                    if (@getimagesize($file_name))
+                        File::delete(base_path() . "/" . Config::get('sfm.dir') . "/.thumbs/" . $to_delete);
                     File::delete($file_name);
-                    if (Session::get('sfm_type') == "Images")
-                        File::delete(base_path() . "/" . $this->file_location . "thumbs/" . $to_delete);
                     return "OK";
                 }
             }

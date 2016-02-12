@@ -23,8 +23,8 @@ class ResizeController extends Controller {
         $image = Input::get('img');
         $dir = Input::get('dir');
 
-        $original_width = Image::make(base_path() . "/" . Config::get('sfm.images_dir') . $dir . "/" . $image)->width();
-        $original_height = Image::make(base_path() . "/" . Config::get('sfm.images_dir') . $dir . "/" . $image)->height();
+        $original_width = Image::make(base_path() . "/" . Config::get('sfm.dir') . $dir . "/" . $image)->width();
+        $original_height = Image::make(base_path() . "/" . Config::get('sfm.dir') . $dir . "/" . $image)->height();
 
         $scaled = false;
 
@@ -49,7 +49,7 @@ class ResizeController extends Controller {
         }
 
         return View::make('filemanager::resize')
-            ->with('img', Config::get('sfm.images_url') . $dir . "/" . $image)
+            ->with('img', Config::get('sfm.url') . $dir . "/" . $image)
             ->with('dir', $dir)
             ->with('image', $image)
             ->with('height', number_format($height, 0))

@@ -57,11 +57,16 @@ following command:
 1. If you don't want to use the default image/file directory or url, update the appropriate lines in config/sfm.php:
 
     ```php
-        'images_dir'         => 'public/vendor/filemanager/images/',
-        'images_url'         => '/vendor/filemanager/images/',
-        'files_dir'          => 'public/vendor/filemanager/files/',
-        'files_url'          => '/vendor/filemanager/files/',
+        'dir'         => 'public/vendor/filemanager/images/',
+        'url'         => '/vendor/filemanager/images/',
     ```
+
+1. Allowed extension. By default all is enabled. In in config/sfm.php
+
+    ```php
+        'allow' => [],
+    ```
+set allowed in array: ['png', 'zip', '...']
     
 1. Ensure that the files & images directories are writable by your web serber
 
@@ -71,15 +76,15 @@ CKEditor instance as follows:
     ```javascript
         <script>
             CKEDITOR.replace( 'editor', {
-                filebrowserImageBrowseUrl: '/filemanager?type=Images',
-                filebrowserBrowseUrl: '/filemanager?type=Files'
+                filebrowserImageBrowseUrl: '/filemanager',
+                filebrowserBrowseUrl: '/filemanager'
             });
         </script>
     ```
     
     Here, "editor" is the id of the textarea you are transforming to a CKEditor instance. Note that if
-    you are using a custom route you will have to change `/filemanager?type=Images` to correspond
-    to whatever route you have chosen. Be sure to include the `?type=Images` parameter.
+    you are using a custom route you will have to change `/filemanager` to correspond
+    to whatever route you have chosen.
 
 1. Before
 ```html
@@ -110,8 +115,7 @@ simply wrap the routes in a group, perhaps like this:
 		Route::any('/filemanager/upload', ['as' => 'filemanager.upload', 'uses' => 'UploadController@upload']);
 
 		// list images & files
-		Route::get('/filemanager/jsonimages', ['as' => 'filemanager.images', 'uses' => 'ItemsController@getImages']);
-		Route::get('/filemanager/jsonfiles', ['as' => 'filemanager.files', 'uses' => 'ItemsController@getFiles']);
+		Route::get('/filemanager/json', ['as' => 'filemanager.files', 'uses' => 'ItemsController@getFiles']);
 
 		// folders
 		Route::get('/filemanager/newfolder', ['as' => 'filemanager.newfolder', 'uses' => 'FolderController@getAddfolder']);

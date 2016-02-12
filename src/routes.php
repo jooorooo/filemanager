@@ -10,8 +10,7 @@ Route::group(array('middleware' => config('sfm.middleware'), 'namespace' => 'Sim
     Route::any('/filemanager/upload', ['as' => 'filemanager.upload', 'uses' => 'UploadController@upload']);
 
     // list images & files
-    Route::get('/filemanager/jsonimages', ['as' => 'filemanager.images', 'uses' => 'ItemsController@getImages']);
-    Route::get('/filemanager/jsonfiles', ['as' => 'filemanager.files', 'uses' => 'ItemsController@getFiles']);
+    Route::get('/filemanager/json', ['as' => 'filemanager.files', 'uses' => 'ItemsController@getFiles']);
 
     // folders
     Route::get('/filemanager/newfolder', ['as' => 'filemanager.newfolder', 'uses' => 'FolderController@getAddfolder']);

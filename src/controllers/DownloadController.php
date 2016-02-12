@@ -13,24 +13,6 @@ use Illuminate\Support\Facades\Session;
 class DownloadController extends Controller {
 
     /**
-     * @var
-     */
-    protected $file_location;
-
-
-    /**
-     * constructor
-     */
-    function __construct()
-    {
-        if (Session::get('sfm_type') == "Images")
-            $this->file_location = Config::get('sfm.images_dir');
-        else
-            $this->file_location = Config::get('sfm.files_dir');
-    }
-
-
-    /**
      * Download a file
      *
      * @return mixed
@@ -41,7 +23,7 @@ class DownloadController extends Controller {
         $dir = Input::get('dir');
         return Response::download(base_path()
             .  "/"
-            . $this->file_location
+            . Config::get('sfm.dir')
             .  $dir
             . "/"
             . $file_to_download);

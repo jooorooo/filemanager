@@ -1,5 +1,6 @@
 <?php namespace Simexis\Filemanager\controllers;
 
+use Lang;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
@@ -13,17 +14,6 @@ use Illuminate\Support\Str;
  */
 class RenameController extends Controller {
 
-    protected $file_location;
-
-    function __construct()
-    {
-        if (Session::get('sfm_type') == "Images")
-            $this->file_location = Config::get('sfm.images_dir');
-        else
-            $this->file_location = Config::get('sfm.files_dir');
-    }
-
-
     /**
      * @return string
      */
@@ -35,59 +25,60 @@ class RenameController extends Controller {
 
         if ($dir == "/")
         {
-            if (File::exists(base_path() . "/". $this->file_location . $new_name))
+            if (File::exists(base_path() . "/". Config::get('sfm.dir') . $new_name))
             {
-                return "File name already in use!";
+                return Lang::get('filemanager::sfm.file_exists');
             } else
             {
-                if (File::isDirectory(base_path() . "/" . $this->file_location . $file_to_rename))
+                if (File::isDirectory(base_path() . "/" . Config::get('sfm.dir') . $file_to_rename))
                 {
-                    File::move(base_path() . "/" . $this->file_location . $file_to_rename,
-                        base_path() . "/" . $this->file_location . $new_name);
+                    File::move(base_path() . "/" . Config::get('sfm.dir') . $file_to_rename,
+                        base_path() . "/" . Config::get('sfm.dir') . $new_name);
 
                     return "OK";
                 } else
                 {
-                    $extension = File::extension(base_path() . "/" . $this->file_location . $file_to_rename);
+                    $extension = File::extension(base_path() . "/" . Config::get('sfm.dir') . $file_to_rename);
                     $new_name = Str::slug(str_replace($extension, '', $new_name)) . "." . $extension;
 
-                    File::move(base_path() . "/" . $this->file_location . $file_to_rename,
-                        base_path() . "/" . $this->file_location . $new_name);
-
-                    if (Session::get('sfm_type') == "Images")
+                    if (@getimagesize(base_path() . "/" . Config::get('sfm.dir') . $file_to_rename))
                     {
                         // rename thumbnail
-                        File::move(base_path() . "/" . $this->file_location . "thumbs/" . $file_to_rename,
-                            base_path() . "/" . $this->file_location . "thumbs/" . $new_name);
+                        File::move(base_path() . "/" . Config::get('sfm.dir') . "/.thumbs/" . $file_to_rename,
+                            base_path() . "/" . Config::get('sfm.dir') . "/.thumbs/" . $new_name);
                     }
+
+                    File::move(base_path() . "/" . Config::get('sfm.dir') . $file_to_rename,
+                        base_path() . "/" . Config::get('sfm.dir') . $new_name);
 
                     return "OK";
                 }
             }
         } else
         {
-            if (File::exists(base_path() . "/" . $this->file_location . $dir . "/" . $new_name))
+            if (File::exists(base_path() . "/" . Config::get('sfm.dir') . $dir . "/" . $new_name))
             {
-                return "File name already in use!";
+                return Lang::get('filemanager::sfm.file_exists');
             } else
             {
-                if (File::isDirectory(base_path() . "/" . $this->file_location . $dir . "/" . $file_to_rename))
+                if (File::isDirectory(base_path() . "/" . Config::get('sfm.dir') . $dir . "/" . $file_to_rename))
                 {
-                    File::move(base_path() . "/" . $this->file_location . $dir . "/" . $file_to_rename,
-                        base_path() . "/" . $this->file_location . $dir . "/" . $new_name);
+                    File::move(base_path() . "/" . Config::get('sfm.dir') . $dir . "/" . $file_to_rename,
+                        base_path() . "/" . Config::get('sfm.dir') . $dir . "/" . $new_name);
                 } else
                 {
-                    $extension = File::extension(base_path() . "/" . $this->file_location . $dir . "/" . $file_to_rename);
+                    $extension = File::extension(base_path() . "/" . Config::get('sfm.dir') . $dir . "/" . $file_to_rename);
                     $new_name = Str::slug(str_replace($extension, '', $new_name)) . "." . $extension;
 
-                    File::move(base_path() . "/" . $this->file_location . $dir . "/" . $file_to_rename,
-                        base_path() . "/" . $this->file_location . $dir . "/" . $new_name);
-
-                    if (Session::get('sfm_type') == "Images")
+                    if (@getimagesize(base_path() . "/" . Config::get('sfm.dir') . $dir . "/" . $file_to_rename))
                     {
-                        File::move(base_path() . "/" . $this->file_location . $dir . "/thumbs/" . $file_to_rename,
-                            base_path() . "/" . $this->file_location . $dir . "/thumbs/" . $new_name);
+                        File::move(base_path() . "/" . Config::get('sfm.dir') . $dir . "/.thumbs/" . $file_to_rename,
+                            base_path() . "/" . Config::get('sfm.dir') . $dir . "/.thumbs/" . $new_name);
                     }
+
+                    File::move(base_path() . "/" . Config::get('sfm.dir') . $dir . "/" . $file_to_rename,
+                        base_path() . "/" . Config::get('sfm.dir') . $dir . "/" . $new_name);
+
                     return "OK";
                 }
             }

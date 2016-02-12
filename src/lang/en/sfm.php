@@ -29,5 +29,11 @@ return [
 	'view_file'    => 'View File',
 	'uploading'	   => 'Uploading...',
 	'upload_file'  => 'Upload File...',
-	'confirm_delete' => 'Are you sure you want to delete this item?'
+	'confirm_delete' => 'Are you sure you want to delete this item?',
+	'not_found'	   => 'File ":file" not found!',
+	'not_empty' => 'You cannot delete this folder because it is not empty!',
+	'folder_exists' => 'A folder with this name already exists!',
+	'file_exists' => 'File name already in use!',
+	'select_file' => 'You must choose a file!',
+	'file_not_allowed' => 'This file format is not allowed!',
 ];

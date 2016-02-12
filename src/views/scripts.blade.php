@@ -25,8 +25,7 @@ window.useFile = function(num, file) {
     var holder = $('#filemanager-holder-' + num),
         input = holder.find('.file-input'),
         is_image = input.hasClass('event-image-input');
-    input.val(file)
-    console.log(holder, input, is_image)
+    input.val(file);
     if(is_image) {
         holder.find('.holderjs').attr('src', file);
     }
@@ -47,6 +46,9 @@ if(jQuery) {
                     });
                 })
                 .val();
+        if(src) {
+            wrap.find('.holderjs').attr('src', src);
+        }
         wrap.attr('id', 'filemanager-holder-' + num).find('.button-upload').off('.file-upload').on('click.file-upload', function() {
             var modal = $('#modal-open-filemanager');
                 modal.find('.modal-dialog, .modal-content').css({

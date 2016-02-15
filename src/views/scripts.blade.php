@@ -35,7 +35,7 @@ if(jQuery) {
     var last_opened = null;
     $('.event-image-input, .event-file-input').each(function(num) {
         var input = $(this),
-            is_image = input.hasClass('event-image-input'),
+            is_image = input.hasClass('event-image-input') ? 1 : 0,
             wrap = input.wrap(is_image ? '<div class="filemanager-selector filemanager-image-selector"></div>':'<div class="filemanager-selector filemanager-file-selector"><div class="input-group col-xs-12"></div></div>').closest('.filemanager-selector'),
             src = input.addClass(is_image ? 'hide hidden-image-input file-input' : 'file-input')
                 .attr('readonly', true)
@@ -55,9 +55,9 @@ if(jQuery) {
                             width: window.innerWidth- parseInt(window.innerWidth/10),
                             height: window.innerHeight - parseInt(window.innerHeight/10)
                         });
-            if(last_opened !== is_image) {
+            if(last_opened !== is_image + '_' + num) {
                 modal.find('iframe').attr('src', (is_image ? '{!! route('filemanager.show', ['filter' => 'images','num' => 'NUMBER', 'inline' => 1]) !!}' : '{!! route('filemanager.show', ['num' => 'NUMBER', 'inline' => 1]) !!}').replace('NUMBER', num));
-                last_opened = is_image;
+                last_opened = is_image + '_' + num;
             }
             modal.modal('show');
         });
